@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ветеринарная Клиника - Управление Пациентами</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        input, textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .table-section {
+            margin-top: 30px;
+        }
+
+        .table-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-buttons button {
+            padding: 6px 12px;
+            font-size: 0.9em;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .search-section input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .message.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐾 Ветеринарная Клиника</h1>
+            <p>Система управления пациентами</p>
+        </header>
+
+        <div class="content">
+            <div id="message" class="message"></div>
+
+            <div class="form-section">
+                <h2 id="formTitle">Добавить нового пациента</h2>
+                <form id="patientForm">
+                    <input type="hidden" id="patientId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="ownerName">Имя владельца *</label>
+                            <input type="text" id="ownerName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="petName">Имя питомца *</label>
+                            <input type="text" id="petName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="species">Вид животного *</label>
+                            <input type="text" id="species" placeholder="Например: Собака, Кошка" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="breed">Порода *</label>
+                            <input type="text" id="breed" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dateOfBirth">Дата рождения *</label>
+                            <input type="date" id="dateOfBirth" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="notes">Заметки</label>
+                            <textarea id="notes" placeholder="Дополнительная информация о пациенте"></textarea>
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn-primary" id="submitBtn">Добавить пациента</button>
+                        <button type="button" class="btn-secondary" id="cancelBtn" style="display: none;" onclick="resetForm()">Отмена</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="table-section">
+                <h2>Список пациентов</h2>
+                <div class="search-section">
+                    <input type="text" id="searchInput" placeholder="Поиск по имени питомца или владельца...">
+                    <button type="button" class="btn-secondary" onclick="searchPatients()">Поиск</button>
+                    <button type="button" class="btn-secondary" onclick="loadPatients()">Показать всех</button>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Владелец</th>
+                                <th>Питомец</th>
+                                <th>Вид</th>
+                                <th>Порода</th>
+                                <th>Дата рождения</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="patientsTable">
+                            <tr>
+                                <td colspan="7" style="text-align: center; padding: 20px;">
+                                    Загрузка данных...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = '/api/patients';
+
+        // Загрузка пациентов при загрузке страницы
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPatients();
+        });
+
+        // Обработка формы
+        document.getElementById('patientForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const patientId = document.getElementById('patientId').value;
+            
+            const patient = {
+                ownerName: document.getElementById('ownerName').value,
+                petName: document.getElementById('petName').value,
+                species: document.getElementById('species').value,
+                breed: document.getElementById('breed').value,
+                dateOfBirth: document.getElementById('dateOfBirth').value,
+                notes: document.getElementById('notes').value
+            };
+
+            try {
+                let response;
+                if (patientId) {
+                    // Обновление
+                    response = await fetch(`${API_BASE_URL}/${patientId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(patient)
+                    });
+                } else {
+                    // Создание
+                    response = await fetch(API_BASE_URL, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(patient)
+                    });
+                }
+
+                if (response.ok) {
+                    showMessage(patientId ? 'Пациент успешно обновлен!' : 'Пациент успешно добавлен!', 'success');
+                    resetForm();
+                    loadPatients();
+                } else {
+                    showMessage('Ошибка при сохранении пациента', 'error');
+                }
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        });
+
+        // Загрузка списка пациентов
+        async function loadPatients() {
+            try {
+                const response = await fetch(API_BASE_URL);
+                const patients = await response.json();
+                displayPatients(patients);
+            } catch (error) {
+                showMessage('Ошибка при загрузке пациентов: ' + error.message, 'error');
+                document.getElementById('patientsTable').innerHTML = 
+                    '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">Ошибка загрузки данных</td></tr>';
+            }
+        }
+
+        // Отображение пациентов в таблице
+        function displayPatients(patients) {
+            const tbody = document.getElementById('patientsTable');
+            
+            if (!patients || patients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Нет пациентов</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = patients.map(patient => `
+                <tr>
+                    <td>${patient.id}</td>
+                    <td>${patient.ownerName}</td>
+                    <td>${patient.petName}</td>
+                    <td>${patient.species}</td>
+                    <td>${patient.breed}</td>
+                    <td>${patient.dateOfBirth}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-success" onclick="editPatient(${patient.id})">Редактировать</button>
+                            <button class="btn-danger" onclick="deletePatient(${patient.id})">Удалить</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Редактирование пациента
+        async function editPatient(id) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`);
+                const patient = await response.json();
+                
+                document.getElementById('patientId').value = patient.id;
+                document.getElementById('ownerName').value = patient.ownerName;
+                document.getElementById('petName').value = patient.petName;
+                document.getElementById('species').value = patient.species;
+                document.getElementById('breed').value = patient.breed;
+                document.getElementById('dateOfBirth').value = patient.dateOfBirth;
+                document.getElementById('notes').value = patient.notes || '';
+                
+                document.getElementById('formTitle').textContent = 'Редактировать пациента';
+                document.getElementById('submitBtn').textContent = 'Сохранить изменения';
+                document.getElementById('cancelBtn').style.display = 'inline-block';
+                
+                // Прокрутка к форме
+                document.querySelector('.form-section').scrollIntoView({ behavior: 'smooth' });
+            } catch (error) {
+                showMessage('Ошибка при загрузке данных пациента: ' + error.message, 'error');
+            }
+        }
+
+        // Удаление пациента
+        async function deletePatient(id) {
+            if (!confirm('Вы уверены, что хотите удалить этого пациента?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage('Пациент успешно удален!', 'success');
+                    loadPatients();
+                } else {
+                    showMessage('Ошибка при удалении пациента', 'error');
+                }
+            } catch (error) {
+                showMessage('Ошибка: ' + error.message, 'error');
+            }
+        }
+
+        // Сброс формы
+        function resetForm() {
+            document.getElementById('patientForm').reset();
+            document.getElementById('patientId').value = '';
+            document.getElementById('formTitle').textContent = 'Добавить нового пациента';
+            document.getElementById('submitBtn').textContent = 'Добавить пациента';
+            document.getElementById('cancelBtn').style.display = 'none';
+        }
+
+        // Поиск пациентов
+        async function searchPatients() {
+            const searchTerm = document.getElementById('searchInput').value.trim();
+            
+            if (!searchTerm) {
+                loadPatients();
+                return;
+            }
+
+            try {
+                // Используем поисковый endpoint
+                const url = `${API_BASE_URL}/search?petName=${encodeURIComponent(searchTerm)}&ownerName=${encodeURIComponent(searchTerm)}`;
+                const response = await fetch(url);
+                const patients = await response.json();
+                
+                displayPatients(patients);
+                
+                if (!patients || patients.length === 0) {
+                    showMessage('Пациенты не найдены', 'error');
+                }
+            } catch (error) {
+                showMessage('Ошибка при поиске: ' + error.message, 'error');
+            }
+        }
+
+        // Поиск при нажатии Enter
+        document.getElementById('searchInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchPatients();
+            }
+        });
+
+        // Показ сообщений
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type} show`;
+            
+            setTimeout(() => {
+                messageDiv.classList.remove('show');
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
